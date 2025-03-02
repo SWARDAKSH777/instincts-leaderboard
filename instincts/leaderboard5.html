@@ -1,0 +1,1641 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Collympics 2025 - Overall Leaderboard</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=VT323&family=Rubik+Mono+One&family=Permanent+Marker&family=Press+Start+2P&family=Audiowide&display=swap"
+        rel="stylesheet">
+    <style>
+        /* Base Styles and Variables */
+        :root {
+            --yellow: #ffc567;
+            --dark-yellow: #ff8800;
+            --yellow-bg: #ffdd55;
+            --pink: #fb7da8;
+            --coral: #fd5a46;
+            --purple: #552cb7;
+            --green: #00995e;
+            --blue: #4a90e2;
+            --dark-blue: #2c3e50;
+            --light-blue: #67c6ff;
+            --collympics: #faca78;
+            --dark: #000000;
+            --light: #f5f5f5;
+            --bg-color: #ffffff;
+            --text-color: var(--dark);
+            --header-bg: #ffffff;
+            --card-bg: #ffffff;
+            --border-color: var(--dark);
+            --shadow-offset: 4px;
+        }
+
+        /* Reset and base styles */
+        html,
+        body {
+            overflow-x: hidden;
+            position: relative;
+            width: 100%;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        *,
+        *:before,
+        *:after {
+            box-sizing: inherit;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: "VT323", monospace;
+            font-size: 20px;
+            line-height: 1.5;
+            max-width: 100vw;
+            background-image: radial-gradient(var(--collympics) 2px, transparent 2px);
+            background-size: 20px 20px;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Typography */
+        h1,
+        h2,
+        h3 {
+            font-family: "Rubik Mono One", sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        h1 {
+            font-size: clamp(2.5rem, 8vw, 5rem);
+            margin-bottom: 0.5rem;
+            color: var(--collympics);
+            line-height: 1.2;
+            padding: 10px;
+            border: 5px solid var(--dark);
+            display: inline-block;
+            box-shadow: var(--shadow-offset) var(--shadow-offset) 0 var(--dark);
+            background-color: #ffffff;
+            transform: rotate(-1deg);
+        }
+
+        /* Back button - copied from original */
+        .back-button {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 100;
+            font-family: "Press Start 2P", cursive;
+            font-size: 14px;
+            padding: 10px 15px;
+            background: #FFECB3;
+            color: #000000;
+            border: 3px solid #000000;
+            box-shadow: 5px 5px 0px #000000;
+            cursor: pointer;
+            text-decoration: none;
+            text-align: center;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .back-button:hover {
+            transform: translateY(-3px) rotate(-2deg);
+            box-shadow: 7px 7px 0px #000000;
+        }
+
+        .back-button:active {
+            transform: translateY(0) rotate(0deg);
+            box-shadow: 2px 2px 0px #000000;
+        }
+
+        /* Leaderboard styles */
+        .leaderboard-header {
+            text-align: center;
+            margin-bottom: 40px;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            border: 6px solid var(--dark);
+            box-shadow: var(--shadow-offset) var(--shadow-offset) 0 var(--dark);
+            background-color: #ffffff;
+        }
+
+        .leaderboard-title {
+            font-size: clamp(2.5rem, 6vw, 4rem);
+            color: var(--collympics);
+            margin-bottom: 20px;
+            font-family: "Press Start 2P", cursive;
+            text-shadow: 4px 4px 0 var(--dark);
+            transform: rotate(-2deg);
+        }
+
+        .leaderboard-subtitle {
+            font-family: "VT323", monospace;
+            font-size: 1.8rem;
+            color: var(--dark);
+            max-width: 800px;
+            margin: 0 auto 30px;
+            border-top: 3px solid var(--dark);
+            border-bottom: 3px solid var(--dark);
+            padding: 10px;
+            transform: rotate(1deg);
+        }
+
+        .leaderboard-container {
+            background-color: #ffffff;
+            border: 5px solid var(--dark);
+            box-shadow: var(--shadow-offset) var(--shadow-offset) 0 var(--dark);
+            padding: 20px;
+            margin-bottom: 40px;
+            overflow-x: auto;
+            /* Enable horizontal scrolling */
+            max-width: 100%;
+            /* Ensure it doesn't exceed the container width */
+        }
+
+        .filter-section {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 15px;
+            padding: 15px;
+            border-bottom: 3px dotted var(--dark);
+        }
+
+        .filter-dropdown {
+            background-color: #ffffff;
+            border: 3px solid var(--dark);
+            padding: 8px 15px;
+            font-family: "VT323", monospace;
+            font-size: 1.2rem;
+            box-shadow: 3px 3px 0 var(--dark);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .filter-dropdown:hover {
+            transform: translate(-2px, -2px);
+            box-shadow: 5px 5px 0 var(--dark);
+        }
+
+        .leaderboard-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            min-width: 600px;
+            /* Set a minimum width for the table */
+        }
+
+        .leaderboard-table th,
+        .leaderboard-table td {
+            border: 2px solid var(--dark);
+            padding: 12px;
+            text-align: center;
+        }
+
+        .leaderboard-table th {
+            background-color: var(--collympics);
+            font-family: "Audiowide", cursive;
+            font-size: 1.2rem;
+            text-transform: uppercase;
+            color: var(--dark);
+        }
+
+        .leaderboard-table tr:nth-child(even) {
+            background-color: rgba(250, 202, 120, 0.2);
+        }
+
+        .leaderboard-table tr:hover {
+            background-color: rgba(250, 202, 120, 0.4);
+        }
+
+        /* Medal styling */
+        .medal {
+            display: inline-block;
+            width: 30px;
+            height: 30px;
+            text-align: center;
+            line-height: 30px;
+            border-radius: 50%;
+            font-weight: bold;
+            color: var(--dark);
+            box-shadow: 2px 2px 0 var(--dark);
+            margin: 0 2px;
+        }
+
+        .gold {
+            background: linear-gradient(45deg, #FFD700, #FFC107);
+            border: 2px solid #B8860B;
+        }
+
+        .silver {
+            background: linear-gradient(45deg, #E0E0E0, #BDBDBD);
+            border: 2px solid #808080;
+        }
+
+        .bronze {
+            background: linear-gradient(45deg, #CD7F32, #A0522D);
+            border: 2px solid #8B4513;
+        }
+
+        /* Pagination */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .page-btn {
+            background-color: var(--collympics);
+            color: var(--dark);
+            border: 3px solid var(--dark);
+            padding: 8px 15px;
+            font-family: "VT323", monospace;
+            font-size: 1.1rem;
+            box-shadow: 3px 3px 0 var(--dark);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .page-btn:hover {
+            transform: translate(-2px, -2px);
+            box-shadow: 5px 5px 0 var(--dark);
+        }
+
+        .page-btn.active {
+            background-color: var(--dark);
+            color: var(--collympics);
+        }
+
+        /* Loading indicator */
+        .loading-indicator {
+            text-align: center;
+            padding: 20px;
+            font-family: "Press Start 2P", cursive;
+            font-size: 1.2rem;
+        }
+
+        .loading-indicator:after {
+            content: " .";
+            animation: dots 1s steps(5, end) infinite;
+        }
+
+        @keyframes dots {
+
+            0%,
+            20% {
+                content: " .";
+            }
+
+            40% {
+                content: " ..";
+            }
+
+            60% {
+                content: " ...";
+            }
+
+            80%,
+            100% {
+                content: " ....";
+            }
+        }
+
+        /* Improved responsive adjustments */
+        @media (max-width: 768px) {
+            .filter-section {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .leaderboard-table {
+                font-size: 0.9rem;
+            }
+
+            .medal {
+                width: 25px;
+                height: 25px;
+                line-height: 25px;
+            }
+
+            .back-button {
+                top: 10px;
+                left: 10px;
+                padding: 8px 12px;
+                font-size: 12px;
+            }
+
+            /* Adjust table cell padding */
+            .leaderboard-table th,
+            .leaderboard-table td {
+                padding: 10px 8px;
+            }
+
+            /* Adjust container padding */
+            .leaderboard-container {
+                padding: 15px 10px;
+                overflow-x: auto;
+                /* Enable horizontal scrolling */
+            }
+        }
+
+        @media (max-width: 480px) {
+
+            .leaderboard-table th,
+            .leaderboard-table td {
+                padding: 8px 5px;
+                font-size: 0.8rem;
+            }
+
+            .medal {
+                width: 20px;
+                height: 20px;
+                line-height: 20px;
+                font-size: 0.7rem;
+            }
+
+            /* Further reduce padding */
+            .leaderboard-container {
+                padding: 10px 5px;
+                overflow-x: auto;
+                /* Enable horizontal scrolling */
+            }
+
+            /* Adjust header styles for better mobile display */
+            .leaderboard-title {
+                font-size: clamp(1.8rem, 5vw, 3rem);
+            }
+
+            .leaderboard-subtitle {
+                font-size: 1.4rem;
+            }
+        }
+
+        /* Card view for very small screens */
+        .card-view-toggle {
+            display: none;
+            margin: 10px auto;
+            padding: 8px 15px;
+            background-color: var(--collympics);
+            color: var(--dark);
+            border: 3px solid var(--dark);
+            font-family: "VT323", monospace;
+            font-size: 1.1rem;
+            box-shadow: 3px 3px 0 var(--dark);
+            cursor: pointer;
+        }
+
+        .card-view .leaderboard-table {
+            display: none;
+        }
+
+        .team-card {
+            border: 3px solid var(--dark);
+            margin-bottom: 15px;
+            padding: 10px;
+            background-color: #ffffff;
+            box-shadow: 3px 3px 0 var(--dark);
+        }
+
+        .team-card-header {
+            display: flex;
+            justify-content: space-between;
+            border-bottom: 2px dotted var(--dark);
+            padding-bottom: 5px;
+            margin-bottom: 8px;
+        }
+
+        .team-card-rank {
+            font-size: 1.2rem;
+            font-weight: bold;
+            background-color: var(--collympics);
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            border: 2px solid var(--dark);
+        }
+
+        .team-card-name {
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+
+        .team-card-details {
+            display: grid;
+            grid-template-columns: auto 1fr;
+            gap: 5px 10px;
+        }
+
+        .team-card-label {
+            font-weight: bold;
+        }
+
+        @media (max-width: 400px) {
+            .card-view-toggle {
+                display: block;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <a href="javascript:history.back()" class="back-button">← Back</a>
+
+    <div class="container">
+        <div class="leaderboard-header">
+            <h1 class="leaderboard-title">COLLYMPICS LEADERBOARD</h1>
+            <p class="leaderboard-subtitle">Overall Rankings Across All Events</p>
+        </div>
+
+        <div class="leaderboard-container">
+            <div class="filter-section">
+                <select class="filter-dropdown" id="viewFilter">
+                    <option value="overall">Overall Rankings</option>
+                    <option value="by-sport">By Sport</option>
+                </select>
+
+                <select class="filter-dropdown" id="sportFilter" style="display: none;">
+                    <option value="all">All Sports</option>
+                    <option value="chess">Chess</option>
+                    <option value="carrom">Carrom</option>
+                    <option value="table-tennis">Table Tennis</option>
+                    <option value="cricket">Cricket</option>
+                    <option value="football">Football</option>
+                    <option value="athletics">Athletics</option>
+                    <option value="tug-of-war">Tug of War</option>
+                    <option value="treasure-hunt">Treasure Hunt</option>
+                    <option value="fun-race">Fun Race</option>
+                </select>
+
+                <select class="filter-dropdown" id="departmentFilter">
+                    <option value="all">All Departments</option>
+                    <option value="Computer Science">Computer Science</option>
+                    <option value="Electronics">Electronics</option>
+                    <option value="Mechanical">Mechanical</option>
+                    <option value="Civil">Civil</option>
+                    <option value="Chemical">Chemical</option>
+                </select>
+            </div>
+
+            <button class="card-view-toggle" id="viewToggle" style="display: none;">
+                Switch to Card View
+            </button>
+
+            <div id="tableContainer">
+                <div class="loading-indicator">Calculating overall rankings</div>
+            </div>
+
+            <div class="pagination" id="paginationContainer"></div>
+        </div>
+    </div>
+
+    <script>
+        // Main configuration
+        const config = {
+            rowsPerPage: 10,
+            medalPoints: {
+                gold: 5,
+                silver: 3,
+                bronze: 1
+            }
+        };
+
+        // Sports data
+        const sportsData = {
+            "chess": [
+                {
+                    "name": "Checkmate Kings",
+                    "department": "Computer Science",
+                    "points": 105,
+                    "medals": {
+                        "gold": 1,
+                        "silver": 0,
+                        "bronze": 1
+                    },
+                    "rank": 1
+                },
+                {
+                    "name": "Mind Masters",
+                    "department": "Electronics",
+                    "points": 95,
+                    "medals": {
+                        "gold": 0,
+                        "silver": 1,
+                        "bronze": 0
+                    },
+                    "rank": 2
+                },
+                {
+                    "name": "Strategic Minds",
+                    "department": "Mechanical",
+                    "points": 82,
+                    "medals": {
+                        "gold": 0,
+                        "silver": 0,
+                        "bronze": 1
+                    },
+                    "rank": 3
+                },
+                {
+                    "name": "Pawn Stars",
+                    "department": "Civil",
+                    "points": 78,
+                    "medals": {
+                        "gold": 0,
+                        "silver": 0,
+                        "bronze": 0
+                    },
+                    "rank": 4
+                },
+                {
+                    "name": "Knight Riders",
+                    "department": "Chemical",
+                    "points": 65,
+                    "medals": {
+                        "gold": 0,
+                        "silver": 0,
+                        "bronze": 0
+                    },
+                    "rank": 5
+                }
+            ],
+            "carrom": [
+                {
+                    "name": "Checkmate Kings",
+                    "department": "Computer Science",
+                    "points": 102,
+                    "medals": {
+                        "gold": 1,
+                        "silver": 0,
+                        "bronze": 0
+                    },
+                    "rank": 1
+                },
+                {
+                    "name": "Board Bosses",
+                    "department": "Electronics",
+                    "points": 94,
+                    "medals": {
+                        "gold": 0,
+                        "silver": 1,
+                        "bronze": 0
+                    },
+                    "rank": 2
+                },
+                {
+                    "name": "Pocket Pros",
+                    "department": "Mechanical",
+                    "points": 85,
+                    "medals": {
+                        "gold": 0,
+                        "silver": 0,
+                        "bronze": 1
+                    },
+                    "rank": 3
+                },
+                {
+                    "name": "Flick Masters",
+                    "department": "Civil",
+                    "points": 76,
+                    "medals": {
+                        "gold": 0,
+                        "silver": 0,
+                        "bronze": 0
+                    },
+                    "rank": 4
+                },
+                {
+                    "name": "Queen Hunters",
+                    "department": "Chemical",
+                    "points": 68,
+                    "medals": {
+                        "gold": 0,
+                        "silver": 0,
+                        "bronze": 0
+                    },
+                    "rank": 5
+                }
+            ],
+            "table-tennis": [
+                {
+                    "name": "Ping Pong Masters",
+                    "department": "Computer Science",
+                    "points": 98,
+                    "medals": {
+                        "gold": 1,
+                        "silver": 0,
+                        "bronze": 0
+                    },
+                    "rank": 1
+                },
+                {
+                    "name": "Spin Wizards",
+                    "department": "Electronics",
+                    "points": 90,
+                    "medals": {
+                        "gold": 0,
+                        "silver": 1,
+                        "bronze": 0
+                    },
+                    "rank": 2
+                },
+                {
+                    "name": "Rally Kings",
+                    "department": "Mechanical",
+                    "points": 85,
+                    "medals": {
+                        "gold": 0,
+                        "silver": 0,
+                        "bronze": 1
+                    },
+                    "rank": 3
+                },
+                {
+                    "name": "Smash Hitters",
+                    "department": "Civil",
+                    "points": 75,
+                    "medals": {
+                        "gold": 0,
+                        "silver": 0,
+                        "bronze": 0
+                    },
+                    "rank": 4
+                },
+                {
+                    "name": "Paddle Pros",
+                    "department": "Chemical",
+                    "points": 68,
+                    "medals": {
+                        "gold": 0,
+                        "silver": 0,
+                        "bronze": 0
+                    },
+                    "rank": 5
+                }
+            ],
+            "cricket": [
+                {
+                    "name": "Boundary Blazers",
+                    "department": "Computer Science",
+                    "points": 110,
+                    "medals": {
+                        "gold": 1,
+                        "silver": 0,
+                        "bronze": 0
+                    },
+                    "rank": 1
+                },
+                {
+                    "name": "Wicket Warriors",
+                    "department": "Electronics",
+                    "points": 95,
+                    "medals": {
+                        "gold": 0,
+                        "silver": 1,
+                        "bronze": 0
+                    },
+                    "rank": 2
+                },
+                {
+                    "name": "Cricket Crusaders",
+                    "department": "Mechanical",
+                    "points": 87,
+                    "medals": {
+                        "gold": 0,
+                        "silver": 0,
+                        "bronze": 1
+                    },
+                    "rank": 3
+                },
+                {
+                    "name": "Sixer Squad",
+                    "department": "Civil",
+                    "points": 76,
+                    "medals": {
+                        "gold": 0,
+                        "silver": 0,
+                        "bronze": 0
+                    },
+                    "rank": 4
+                },
+                {
+                    "name": "Pitch Patriots",
+                    "department": "Chemical",
+                    "points": 65,
+                    "medals": {
+                        "gold": 0,
+                        "silver": 0,
+                        "bronze": 0
+                    },
+                    "rank": 5
+                }
+            ],
+            "football": [
+                {
+                    "name": "Goal Getters",
+                    "department": "Mechanical",
+                    "points": 115,
+                    "medals": {
+                        "gold": 1,
+                        "silver": 0,
+                        "bronze": 0
+                    },
+                    "rank": 1
+                },
+                {
+                    "name": "Net Ninjas",
+                    "department": "Computer Science",
+                    "points": 100,
+                    "medals": {
+                        "gold": 0,
+                        "silver": 1,
+                        "bronze": 0
+                    },
+                    "rank": 2
+                },
+                {
+                    "name": "Kick Kings",
+                    "department": "Electronics",
+                    "points": 88,
+                    "medals": {
+                        "gold": 0,
+                        "silver": 0,
+                        "bronze": 1
+                    },
+                    "rank": 3
+                },
+                {
+                    "name": "Strike Force",
+                    "department": "Civil",
+                    "points": 76,
+                    "medals": {
+                        "gold": 0,
+                        "silver": 0,
+                        "bronze": 0
+                    },
+                    "rank": 4
+                },
+                {
+                    "name": "Dribble Dynasty",
+                    "department": "Chemical",
+                    "points": 64,
+                    "medals": {
+                        "gold": 0,
+                        "silver": 0,
+                        "bronze": 0
+                    },
+                    "rank": 5
+                }
+            ],
+            "athletics": [
+                {
+                    "name": "Sprint Sensations",
+                    "department": "Electronics",
+                    "points": 108,
+                    "medals": {
+                        "gold": 1,
+                        "silver": 0,
+                        "bronze": 0
+                    },
+                    "rank": 1
+                },
+                {
+                    "name": "Track Titans",
+                    "department": "Computer Science",
+                    "points": 96,
+                    "medals": {
+                        "gold": 0,
+                        "silver": 1,
+                        "bronze": 0
+                    },
+                    "rank": 2
+                },
+                {
+                    "name": "Relay Ravens",
+                    "department": "Mechanical",
+                    "points": 85,
+                    "medals": {
+                        "gold": 0,
+                        "silver": 0,
+                        "bronze": 1
+                    },
+                    "rank": 3
+                },
+                {
+                    "name": "Dash Demons",
+                    "department": "Civil",
+                    "points": 72,
+                    "medals": {
+                        "gold": 0,
+                        "silver": 0,
+                        "bronze": 0
+                    },
+                    "rank": 4
+                },
+                {
+                    "name": "Hurdle Heroes",
+                    "department": "Chemical",
+                    "points": 67,
+                    "medals": {
+                        "gold": 0,
+                        "silver": 0,
+                        "bronze": 0
+                    },
+                    "rank": 5
+                }
+            ],
+            "tug-of-war": [
+                {
+                    "name": "Pulling Panthers",
+                    "department": "Mechanical",
+                    "points": 110,
+                    "medals": {
+                        "gold": 1,
+                        "silver": 0,
+                        "bronze": 0
+                    },
+                    "rank": 1
+                },
+                {
+                    "name": "Rope Raiders",
+                    "department": "Civil",
+                    "points": 95,
+                    "medals": {
+                        "gold": 0,
+                        "silver": 1,
+                        "bronze": 0
+                    },
+                    "rank": 2
+                },
+                {
+                    "name": "Tug Titans",
+                    "department": "Chemical",
+                    "points": 85,
+                    "medals": {
+                        "gold": 0,
+                        "silver": 0,
+                        "bronze": 1
+                    },
+                    "rank": 3
+                },
+                {
+                    "name": "Pull Pros",
+                    "department": "Computer Science",
+                    "points": 70,
+                    "medals": {
+                        "gold": 0,
+                        "silver": 0,
+                        "bronze": 0
+                    },
+                    "rank": 4
+                },
+                {
+                    "name": "Grip Gurus",
+                    "department": "Electronics",
+                    "points": 65,
+                    "medals": {
+                        "gold": 0,
+                        "silver": 0,
+                        "bronze": 0
+                    },
+                    "rank": 5
+                }
+            ],
+            "treasure-hunt": [
+                {
+                    "name": "Map Masters",
+                    "department": "Computer Science",
+                    "points": 105,
+                    "medals": {
+                        "gold": 1,
+                        "silver": 0,
+                        "bronze": 0
+                    },
+                    "rank": 1
+                },
+                {
+                    "name": "Clue Crew",
+                    "department": "Electronics",
+                    "points": 92,
+                    "medals": {
+                        "gold": 0,
+                        "silver": 1,
+                        "bronze": 0
+                    },
+                    "rank": 2
+                },
+                {
+                    "name": "Puzzle Pros",
+                    "department": "Civil",
+                    "points": 84,
+                    "medals": {
+                        "gold": 0,
+                        "silver": 0,
+                        "bronze": 1
+                    },
+                    "rank": 3
+                },
+                {
+                    "name": "Quest Squad",
+                    "department": "Mechanical",
+                    "points": 77,
+                    "medals": {
+                        "gold": 0,
+                        "silver": 0,
+                        "bronze": 0
+                    },
+                    "rank": 4
+                },
+                {
+                    "name": "Riddle Raiders",
+                    "department": "Chemical",
+                    "points": 68,
+                    "medals": {
+                        "gold": 0,
+                        "silver": 0,
+                        "bronze": 0
+                    },
+                    "rank": 5
+                }
+            ],
+            "fun-race": [
+                {
+                    "name": "Funky Racers",
+                    "department": "Electronics",
+                    "points": 100,
+                    "medals": {
+                        "gold": 1,
+                        "silver": 0,
+                        "bronze": 0
+                    },
+                    "rank": 1
+                },
+                {
+                    "name": "Zany Zoomers",
+                    "department": "Computer Science",
+                    "points": 90,
+                    "medals": {
+                        "gold": 0,
+                        "silver": 1,
+                        "bronze": 0
+                    },
+                    "rank": 2
+                },
+                {
+                    "name": "Wacky Runners",
+                    "department": "Chemical",
+                    "points": 82,
+                    "medals": {
+                        "gold": 0,
+                        "silver": 0,
+                        "bronze": 1
+                    },
+                    "rank": 3
+                },
+                {
+                    "name": "Crazy Sprinters",
+                    "department": "Mechanical",
+                    "points": 75,
+                    "medals": {
+                        "gold": 0,
+                        "silver": 0,
+                        "bronze": 0
+                    },
+                    "rank": 4
+                },
+                {
+                    "name": "Quirky Dashers",
+                    "department": "Civil",
+                    "points": 68,
+                    "medals": {
+                        "gold": 0,
+                        "silver": 0,
+                        "bronze": 0
+                    },
+                    "rank": 5
+                }
+            ]
+        };
+
+        // State variables
+        let allTeamsData = [];
+        let overallRankings = [];
+        let filteredTeams = [];
+        let currentPage = 1;
+        let currentView = 'overall';
+        let currentSport = 'all';
+        let currentDepartment = 'all';
+        let isCardView = false;
+
+        // DOM references
+        const tableContainer = document.getElementById('tableContainer');
+        const paginationContainer = document.getElementById('paginationContainer');
+        const viewFilter = document.getElementById('viewFilter');
+        const sportFilter = document.getElementById('sportFilter');
+        const departmentFilter = document.getElementById('departmentFilter');
+        const viewToggleBtn = document.getElementById('viewToggle');
+
+        // Initialize the application
+        document.addEventListener('DOMContentLoaded', () => {
+            // Set up event listeners
+            viewFilter.addEventListener('change', handleViewChange);
+            sportFilter.addEventListener('change', handleSportChange);
+            departmentFilter.addEventListener('change', handleDepartmentChange);
+
+            // Set up card view toggle for mobile
+            const viewToggleBtn = document.getElementById('viewToggle');
+
+            function updateToggleButtonVisibility() {
+                if (window.innerWidth <= 768) {
+                    viewToggleBtn.style.display = 'block';
+                } else {
+                    viewToggleBtn.style.display = 'none';
+                    // Switch back to table view on larger screens
+                    if (isCardView) {
+                        toggleView();
+                    }
+                }
+            }
+
+            // Initial check
+            updateToggleButtonVisibility();
+
+            // Handle window resize
+            window.addEventListener('resize', updateToggleButtonVisibility);
+
+            viewToggleBtn.addEventListener('click', toggleView);
+
+            viewToggleBtn.addEventListener('click', toggleView);
+
+            // Handle window resize
+            window.addEventListener('resize', function () {
+                if (window.innerWidth <= 768) {
+                    viewToggleBtn.style.display = 'block';
+                } else {
+                    viewToggleBtn.style.display = 'none';
+                    // Switch back to table view on larger screens
+                    if (isCardView) {
+                        toggleView();
+                    }
+                }
+            });
+
+            // Process the data and calculate overall rankings
+            processData();
+        });
+
+        // Process all data and calculate overall rankings
+        function processData() {
+            // First, add sport information to each team
+            allTeamsData = [];
+
+            for (const sport in sportsData) {
+                const formattedSport = sport.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+                const sportTeams = sportsData[sport].map(team => ({
+                    ...team,
+                    sport: formattedSport
+                }));
+                allTeamsData = allTeamsData.concat(sportTeams);
+            }
+
+            // Calculate overall rankings by combining points and medals for teams across all sports
+            const teamMap = new Map();
+
+            // Group by team name and department
+            allTeamsData.forEach(team => {
+                const key = `${team.name}|${team.department}`;
+
+                if (!teamMap.has(key)) {
+                    teamMap.set(key, {
+                        name: team.name,
+                        department: team.department,
+                        points: 0,
+                        medals: {
+                            gold: 0,
+                            silver: 0,
+                            bronze: 0
+                        },
+                        sports: []
+                    });
+                }
+
+                const teamData = teamMap.get(key);
+                teamData.points += team.points;
+                teamData.medals.gold += team.medals.gold;
+                teamData.medals.silver += team.medals.silver;
+                teamData.medals.bronze += team.medals.bronze;
+                teamData.sports.push(team.sport);
+            });
+
+            // Convert map to array and calculate total medal points
+            overallRankings = Array.from(teamMap.values()).map(team => {
+                const medalPoints =
+                    (team.medals.gold * config.medalPoints.gold) +
+                    (team.medals.silver * config.medalPoints.silver) +
+                    (team.medals.bronze * config.medalPoints.bronze);
+
+                return {
+                    ...team,
+                    medalPoints,
+                    totalScore: team.points + medalPoints
+                };
+            });
+
+            // Sort by total score (points + medal points)
+            overallRankings.sort((a, b) => b.totalScore - a.totalScore);
+
+            // Assign ranks
+            overallRankings.forEach((team, index) => {
+                team.rank = index + 1;
+            });
+
+            // Apply initial filters
+            applyFilters();
+        }
+
+        // Handle view change (overall vs by-sport)
+        function handleViewChange() {
+            currentView = viewFilter.value;
+            currentPage = 1;
+
+            // Show/hide sport filter based on view
+            sportFilter.style.display = currentView === 'by-sport' ? 'block' : 'none';
+
+            applyFilters();
+        }
+
+        // Handle sport filter change
+        function handleSportChange() {
+            currentSport = sportFilter.value;
+            currentPage = 1;
+            applyFilters();
+        }
+
+        // Handle department filter change
+        function handleDepartmentChange() {
+            currentDepartment = departmentFilter.value;
+            currentPage = 1;
+            applyFilters();
+        }
+
+        // Apply all current filters
+        function applyFilters() {
+            if (currentView === 'overall') {
+                // Filter overall rankings by department
+                filteredTeams = [...overallRankings];
+
+                if (currentDepartment !== 'all') {
+                    filteredTeams = filteredTeams.filter(team => team.department === currentDepartment);
+                }
+            } else {
+                // Filter by sport
+                filteredTeams = [...allTeamsData];
+
+                if (currentSport !== 'all') {
+                    const formattedSport = currentSport.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+                    filteredTeams = filteredTeams.filter(team => team.sport === formattedSport);
+                }
+
+                if (currentDepartment !== 'all') {
+                    filteredTeams = filteredTeams.filter(team => team.department === currentDepartment);
+                }
+
+                // Sort by rank within each sport
+                filteredTeams.sort((a, b) => a.rank - b.rank);
+            }
+
+            if (isCardView) {
+                renderCardView();
+            } else {
+                renderTable();
+            }
+            updatePagination();
+        }
+
+        // Toggle between table and card view
+        function toggleView() {
+            isCardView = !isCardView;
+
+            if (isCardView) {
+                // Switch to card view
+                viewToggleBtn.textContent = 'Switch to Table View';
+                tableContainer.classList.add('card-view');
+                renderCardView();
+            } else {
+                // Switch back to table view
+                viewToggleBtn.textContent = 'Switch to Card View';
+                tableContainer.classList.remove('card-view');
+                renderTable();
+            }
+        }
+
+        // Render the card view
+        function renderCardView() {
+            const startIndex = (currentPage - 1) * config.rowsPerPage;
+            const endIndex = Math.min(startIndex + config.rowsPerPage, filteredTeams.length);
+            const currentPageTeams = filteredTeams.slice(startIndex, endIndex);
+
+            const cardContainer = document.createElement('div');
+            cardContainer.className = 'team-cards-container';
+
+            currentPageTeams.forEach(team => {
+                const card = document.createElement('div');
+                card.className = 'team-card';
+
+                // Create card header with team name and rank
+                const header = document.createElement('div');
+                header.className = 'team-card-header';
+
+                const nameDiv = document.createElement('div');
+                nameDiv.className = 'team-card-name';
+                nameDiv.textContent = team.name;
+
+                const rankDiv = document.createElement('div');
+                rankDiv.className = 'team-card-rank';
+                rankDiv.textContent = currentView === 'overall' ? team.rank : team.rank;
+
+                header.appendChild(nameDiv);
+                header.appendChild(rankDiv);
+                card.appendChild(header);
+
+                // Create card details
+                const details = document.createElement('div');
+                details.className = 'team-card-details';
+
+                // Department
+                const deptLabel = document.createElement('div');
+                deptLabel.className = 'team-card-label';
+                deptLabel.textContent = 'Department:';
+
+                const deptValue = document.createElement('div');
+                deptValue.textContent = team.department;
+
+                details.appendChild(deptLabel);
+                details.appendChild(deptValue);
+
+                // Points
+                const pointsLabel = document.createElement('div');
+                pointsLabel.className = 'team-card-label';
+                pointsLabel.textContent = 'Points:';
+
+                const pointsValue = document.createElement('div');
+                pointsValue.textContent = currentView === 'overall' ? team.totalScore : team.points;
+
+                details.appendChild(pointsLabel);
+                details.appendChild(pointsValue);
+
+                // Medals
+                const medalsLabel = document.createElement('div');
+                medalsLabel.className = 'team-card-label';
+                medalsLabel.textContent = 'Medals:';
+
+                const medalsValue = document.createElement('div');
+                const medalContainer = document.createElement('div');
+                medalContainer.style.display = 'flex';
+                medalContainer.style.gap = '5px';
+
+                // Add medals
+                if (team.medals.gold > 0) {
+                    const goldMedal = document.createElement('span');
+                    goldMedal.className = 'medal gold';
+                    goldMedal.textContent = 'G';
+                    if (team.medals.gold > 1) {
+                        goldMedal.textContent = team.medals.gold + '×G';
+                    }
+                    medalContainer.appendChild(goldMedal);
+                }
+
+                if (team.medals.silver > 0) {
+                    const silverMedal = document.createElement('span');
+                    silverMedal.className = 'medal silver';
+                    silverMedal.textContent = 'S';
+                    if (team.medals.silver > 1) {
+                        silverMedal.textContent = team.medals.silver + '×S';
+                    }
+                    medalContainer.appendChild(silverMedal);
+                }
+
+                if (team.medals.bronze > 0) {
+                    const bronzeMedal = document.createElement('span');
+                    bronzeMedal.className = 'medal bronze';
+                    bronzeMedal.textContent = 'B';
+                    if (team.medals.bronze > 1) {
+                        bronzeMedal.textContent = team.medals.bronze + '×B';
+                    }
+                    medalContainer.appendChild(bronzeMedal);
+                }
+
+                if (team.medals.gold === 0 && team.medals.silver === 0 && team.medals.bronze === 0) {
+                    medalContainer.textContent = '-';
+                }
+
+                medalsValue.appendChild(medalContainer);
+                details.appendChild(medalsLabel);
+                details.appendChild(medalsValue);
+
+                // Sports (only for overall view)
+                if (currentView === 'overall') {
+                    const sportsLabel = document.createElement('div');
+                    sportsLabel.className = 'team-card-label';
+                    sportsLabel.textContent = 'Sports:';
+
+                    const sportsValue = document.createElement('div');
+                    sportsValue.textContent = team.sports.join(', ');
+
+                    details.appendChild(sportsLabel);
+                    details.appendChild(sportsValue);
+                } else if (currentSport === 'all') {
+                    // Show sport name for "all sports" view
+                    const sportLabel = document.createElement('div');
+                    sportLabel.className = 'team-card-label';
+                    sportLabel.textContent = 'Sport:';
+
+                    const sportValue = document.createElement('div');
+                    sportValue.textContent = team.sport;
+
+                    details.appendChild(sportLabel);
+                    details.appendChild(sportValue);
+                }
+
+                card.appendChild(details);
+                cardContainer.appendChild(card);
+            });
+
+            tableContainer.innerHTML = '';
+            tableContainer.appendChild(cardContainer);
+        }
+
+        // Render the table with current data
+        function renderTable() {
+            const table = document.createElement('table');
+            table.className = 'leaderboard-table';
+
+            // Create table header
+            const thead = document.createElement('thead');
+            const headerRow = document.createElement('tr');
+
+            // Define headers based on the current view
+            let headers = ['Rank', 'Player/Team', 'Department'];
+
+            if (currentView === 'overall') {
+                headers.push('Total Points', 'Medals', 'Sports Participated');
+            } else {
+                if (currentSport === 'all') {
+                    headers.push('Sport');
+                }
+                headers.push('Points', 'Medals');
+            }
+
+            // Add header cells
+            headers.forEach(headerText => {
+                const th = document.createElement('th');
+                th.textContent = headerText;
+                headerRow.appendChild(th);
+            });
+
+            thead.appendChild(headerRow);
+            table.appendChild(thead);
+
+            // Create table body
+            const tbody = document.createElement('tbody');
+
+            // Calculate pagination
+            const startIndex = (currentPage - 1) * config.rowsPerPage;
+            const endIndex = Math.min(startIndex + config.rowsPerPage, filteredTeams.length);
+            const currentPageTeams = filteredTeams.slice(startIndex, endIndex);
+
+            // Add rows for current page
+            currentPageTeams.forEach((team, index) => {
+                const tr = document.createElement('tr');
+
+                // Rank cell
+                const rankCell = document.createElement('td');
+                rankCell.textContent = currentView === 'overall' ? team.rank : team.rank;
+                tr.appendChild(rankCell);
+
+                // Team name cell
+                const nameCell = document.createElement('td');
+                nameCell.textContent = team.name;
+                tr.appendChild(nameCell);
+
+                // Department cell
+                const deptCell = document.createElement('td');
+                deptCell.textContent = team.department;
+                tr.appendChild(deptCell);
+
+                if (currentView === 'overall') {
+                    // Total points cell (points + medal points)
+                    const pointsCell = document.createElement('td');
+                    pointsCell.textContent = team.totalScore;
+                    tr.appendChild(pointsCell);
+
+                    // Medals cell
+                    const medalCell = document.createElement('td');
+                    renderMedals(medalCell, team.medals);
+                    tr.appendChild(medalCell);
+
+                    // Sports participated cell
+                    const sportsCell = document.createElement('td');
+                    sportsCell.textContent = team.sports.join(', ');
+                    tr.appendChild(sportsCell);
+                } else {
+                    // Sport cell (only for "All Sports" view)
+                    if (currentSport === 'all') {
+                        const sportCell = document.createElement('td');
+                        sportCell.textContent = team.sport;
+                        tr.appendChild(sportCell);
+                    }
+
+                    // Points cell
+                    const pointsCell = document.createElement('td');
+                    pointsCell.textContent = team.points;
+                    tr.appendChild(pointsCell);
+
+                    // Medals cell
+                    const medalCell = document.createElement('td');
+                    renderMedals(medalCell, team.medals);
+                    tr.appendChild(medalCell);
+                }
+
+                tbody.appendChild(tr);
+            });
+
+            table.appendChild(tbody);
+
+            // Replace the loading indicator with the table
+            tableContainer.innerHTML = '';
+            tableContainer.appendChild(table);
+        }
+
+        // Render medals in a cell
+        function renderMedals(cell, medals) {
+            // Create container for medals
+            const medalContainer = document.createElement('div');
+            medalContainer.style.display = 'flex';
+            medalContainer.style.justifyContent = 'center';
+            medalContainer.style.gap = '5px';
+
+            // Add gold medals
+            if (medals.gold > 0) {
+                const goldWrapper = document.createElement('div');
+                goldWrapper.style.display = 'flex';
+                goldWrapper.style.alignItems = 'center';
+
+                if (medals.gold > 1) {
+                    const goldCount = document.createElement('span');
+                    goldCount.textContent = `${medals.gold}× `;
+                    goldCount.style.fontWeight = 'bold';
+                    goldWrapper.appendChild(goldCount);
+                }
+
+                const goldMedal = document.createElement('span');
+                goldMedal.className = 'medal gold';
+                goldMedal.textContent = 'G';
+                goldWrapper.appendChild(goldMedal);
+
+                medalContainer.appendChild(goldWrapper);
+            }
+
+            // Add silver medals
+            if (medals.silver > 0) {
+                const silverWrapper = document.createElement('div');
+                silverWrapper.style.display = 'flex';
+                silverWrapper.style.alignItems = 'center';
+
+                if (medals.silver > 1) {
+                    const silverCount = document.createElement('span');
+                    silverCount.textContent = `${medals.silver}× `;
+                    silverCount.style.fontWeight = 'bold';
+                    silverWrapper.appendChild(silverCount);
+                }
+
+                const silverMedal = document.createElement('span');
+                silverMedal.className = 'medal silver';
+                silverMedal.textContent = 'S';
+                silverWrapper.appendChild(silverMedal);
+
+                medalContainer.appendChild(silverWrapper);
+            }
+
+            // Add bronze medals
+            if (medals.bronze > 0) {
+                const bronzeWrapper = document.createElement('div');
+                bronzeWrapper.style.display = 'flex';
+                bronzeWrapper.style.alignItems = 'center';
+
+                if (medals.bronze > 1) {
+                    const bronzeCount = document.createElement('span');
+                    bronzeCount.textContent = `${medals.bronze}× `;
+                    bronzeCount.style.fontWeight = 'bold';
+                    bronzeWrapper.appendChild(bronzeCount);
+                }
+
+                const bronzeMedal = document.createElement('span');
+                bronzeMedal.className = 'medal bronze';
+                bronzeMedal.textContent = 'B';
+                bronzeWrapper.appendChild(bronzeMedal);
+
+                medalContainer.appendChild(bronzeWrapper);
+            }
+
+            // If no medals, show a dash
+            if (medals.gold === 0 && medals.silver === 0 && medals.bronze === 0) {
+                medalContainer.textContent = '-';
+            }
+
+            cell.appendChild(medalContainer);
+        }
+
+        // Update pagination controls
+        function updatePagination() {
+            const totalPages = Math.ceil(filteredTeams.length / config.rowsPerPage);
+            paginationContainer.innerHTML = '';
+
+            // Don't show pagination if only one page
+            if (totalPages <= 1) {
+                return;
+            }
+
+            // Previous button
+            if (totalPages > 1) {
+                const prevButton = document.createElement('button');
+                prevButton.className = 'page-btn prev-btn';
+                prevButton.textContent = '← Prev';
+                prevButton.disabled = currentPage === 1;
+                prevButton.addEventListener('click', () => {
+                    if (currentPage > 1) {
+                        currentPage--;
+                        if (isCardView) {
+                            renderCardView();
+                        } else {
+                            renderTable();
+                        }
+                        updatePagination();
+                    }
+                });
+                paginationContainer.appendChild(prevButton);
+            }
+
+            // Page number buttons
+            for (let i = 1; i <= totalPages; i++) {
+                const pageButton = document.createElement('button');
+                pageButton.className = 'page-btn number-btn' + (i === currentPage ? ' active' : '');
+                pageButton.textContent = i;
+                pageButton.addEventListener('click', () => {
+                    currentPage = i;
+                    if (isCardView) {
+                        renderCardView();
+                    } else {
+                        renderTable();
+                    }
+                    updatePagination();
+                });
+                paginationContainer.appendChild(pageButton);
+            }
+
+            // Next button
+            if (totalPages > 1) {
+                const nextButton = document.createElement('button');
+                nextButton.className = 'page-btn next-btn';
+                nextButton.textContent = 'Next →';
+                nextButton.disabled = currentPage === totalPages;
+                nextButton.addEventListener('click', () => {
+                    if (currentPage < totalPages) {
+                        currentPage++;
+                        if (isCardView) {
+                            renderCardView();
+                        } else {
+                            renderTable();
+                        }
+                        updatePagination();
+                    }
+                });
+                paginationContainer.appendChild(nextButton);
+            }
+        }
+    </script>
+</body>
+
+</html>
