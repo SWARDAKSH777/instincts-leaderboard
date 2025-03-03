@@ -457,6 +457,37 @@
                 display: block;
             }
         }
+
+        /* Disabled filter styles */
+        .filter-control.disabled {
+            opacity: 0.5;
+            pointer-events: none;
+        }
+
+        /* Event Tag Styles */
+        .event-tag {
+            display: inline-block;
+            padding: 2px 6px;
+            border-radius: 12px;
+            font-size: 0.8em;
+            margin-left: 8px;
+        }
+
+        .event-tag.enabled {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        .event-tag.disabled {
+            background-color: #f44336;
+            color: white;
+        }
+
+        .no-events-message {
+            text-align: center;
+            padding: 20px;
+            font-size: 1.2rem;
+        }
     </style>
 </head>
 
@@ -471,12 +502,12 @@
 
         <div class="leaderboard-container">
             <div class="filter-section">
-                <select class="filter-dropdown" id="viewFilter">
+                <select class="filter-dropdown filter-control" id="viewFilter">
                     <option value="overall">Overall Rankings</option>
                     <option value="by-sport">By Sport</option>
                 </select>
 
-                <select class="filter-dropdown" id="sportFilter" style="display: none;">
+                <select class="filter-dropdown filter-control" id="sportFilter" style="display: none;">
                     <option value="all">All Sports</option>
                     <option value="chess">Chess</option>
                     <option value="carrom">Carrom</option>
@@ -489,7 +520,7 @@
                     <option value="fun-race">Fun Race</option>
                 </select>
 
-                <select class="filter-dropdown" id="departmentFilter">
+                <select class="filter-dropdown filter-control" id="departmentFilter">
                     <option value="all">All Departments</option>
                     <option value="Computer Science">Computer Science</option>
                     <option value="Electronics">Electronics</option>
@@ -514,12 +545,26 @@
     <script>
         // Main configuration
         const config = {
-            rowsPerPage: 10,
+            tableRowsPerPage: 10,
+            cardRowsPerPage: 5,
             medalPoints: {
-                gold: 5,
-                silver: 3,
+                gold: 3,
+                silver: 2,
                 bronze: 1
             }
+        };
+
+        // Event status tracking - set to true to enable, false to disable
+        const eventStatus = {
+            "chess": false,
+            "carrom": true,
+            "table-tennis": true,
+            "cricket": true,
+            "football": true,
+            "athletics": true,
+            "tug-of-war": true,
+            "treasure-hunt": true,
+            "fun-race": true
         };
 
         // Sports data
@@ -1048,6 +1093,8 @@
         let currentSport = 'all';
         let currentDepartment = 'all';
         let isCardView = false;
+        let isFirstPageLoad = true;
+        let isDirectPageLoad = true;
 
         // DOM references
         const tableContainer = document.getElementById('tableContainer');
@@ -1087,8 +1134,6 @@
 
             viewToggleBtn.addEventListener('click', toggleView);
 
-            viewToggleBtn.addEventListener('click', toggleView);
-
             // Handle window resize
             window.addEventListener('resize', function () {
                 if (window.innerWidth <= 768) {
@@ -1108,77 +1153,108 @@
 
         // Process all data and calculate overall rankings
         function processData() {
-            // First, add sport information to each team
-            allTeamsData = [];
-
-            for (const sport in sportsData) {
-                const formattedSport = sport.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
-                const sportTeams = sportsData[sport].map(team => ({
-                    ...team,
-                    sport: formattedSport
-                }));
-                allTeamsData = allTeamsData.concat(sportTeams);
-            }
-
-            // Calculate overall rankings by combining points and medals for teams across all sports
-            const teamMap = new Map();
-
-            // Group by team name and department
-            allTeamsData.forEach(team => {
-                const key = `${team.name}|${team.department}`;
-
-                if (!teamMap.has(key)) {
-                    teamMap.set(key, {
-                        name: team.name,
-                        department: team.department,
-                        points: 0,
-                        medals: {
-                            gold: 0,
-                            silver: 0,
-                            bronze: 0
-                        },
-                        sports: []
-                    });
+            try {
+                // Check if all events are false
+                const allEventsFalse = Object.values(eventStatus).every(status => status === false);
+                if (allEventsFalse) {
+                    tableContainer.innerHTML = '<div class="no-events-message">No events currently ongoing</div>';
+                    return;
                 }
 
-                const teamData = teamMap.get(key);
-                teamData.points += team.points;
-                teamData.medals.gold += team.medals.gold;
-                teamData.medals.silver += team.medals.silver;
-                teamData.medals.bronze += team.medals.bronze;
-                teamData.sports.push(team.sport);
-            });
+                console.log('[DEBUG] Starting data processing');
+                // First, add sport information to each team
+                allTeamsData = [];
 
-            // Convert map to array and calculate total medal points
-            overallRankings = Array.from(teamMap.values()).map(team => {
-                const medalPoints =
-                    (team.medals.gold * config.medalPoints.gold) +
-                    (team.medals.silver * config.medalPoints.silver) +
-                    (team.medals.bronze * config.medalPoints.bronze);
+                console.log('[DEBUG] Processing sports data');
+                for (const sport in sportsData) {
+                    // Only include enabled events
+                    if (eventStatus[sport]) {
+                        const formattedSport = sport;
+                        const sportTeams = sportsData[sport].map(team => ({
+                            ...team,
+                            sport: formattedSport
+                        }));
+                        allTeamsData = allTeamsData.concat(sportTeams);
+                    }
+                }
 
-                return {
-                    ...team,
-                    medalPoints,
-                    totalScore: team.points + medalPoints
-                };
-            });
+                console.log('[DEBUG] Calculating overall rankings');
+                // Calculate overall rankings by combining points and medals for teams across all sports
+                const teamMap = new Map();
 
-            // Sort by total score (points + medal points)
-            overallRankings.sort((a, b) => b.totalScore - a.totalScore);
+                // Group by team name and department
+                allTeamsData.forEach(team => {
+                    const key = `${team.name}|${team.department}`;
 
-            // Assign ranks
-            overallRankings.forEach((team, index) => {
-                team.rank = index + 1;
-            });
+                    if (!teamMap.has(key)) {
+                        teamMap.set(key, {
+                            name: team.name,
+                            department: team.department,
+                            points: 0,
+                            medals: {
+                                gold: 0,
+                                silver: 0,
+                                bronze: 0
+                            },
+                            sports: []
+                        });
+                    }
 
-            // Apply initial filters
-            applyFilters();
+                    const teamData = teamMap.get(key);
+                    teamData.points += team.points;
+                    teamData.medals.gold += team.medals.gold;
+                    teamData.medals.silver += team.medals.silver;
+                    teamData.medals.bronze += team.medals.bronze;
+                    teamData.sports.push(team.sport);
+                });
+
+                console.log('[DEBUG] Calculating medal points');
+                // Convert map to array and calculate total medal points
+                overallRankings = Array.from(teamMap.values()).map(team => {
+                    const medalPoints =
+                        (team.medals.gold * config.medalPoints.gold) +
+                        (team.medals.silver * config.medalPoints.silver) +
+                        (team.medals.bronze * config.medalPoints.bronze);
+
+                    return {
+                        ...team,
+                        medalPoints,
+                        totalScore: team.points + medalPoints
+                    };
+                });
+
+                console.log('[DEBUG] Sorting teams');
+                // Sort by total score (points + medal points)
+                overallRankings.sort((a, b) => b.totalScore - a.totalScore);
+
+                console.log('[DEBUG] Assigning ranks');
+                // Assign ranks
+                overallRankings.forEach((team, index) => {
+                    team.rank = index + 1;
+                });
+
+                console.log('[DEBUG] Applying initial filters');
+                // Apply initial filters
+                applyFilters();
+
+                console.log('[DEBUG] Data processing complete');
+            } catch (error) {
+                console.error('[ERROR] Error processing data:', error);
+            }
         }
 
         // Handle view change (overall vs by-sport)
         function handleViewChange() {
             currentView = viewFilter.value;
             currentPage = 1;
+
+            // Update sport filter options based on enabled events
+            const sportOptions = sportFilter.querySelectorAll('option');
+            sportOptions.forEach(option => {
+                if (option.value !== 'all') {
+                    option.style.display = eventStatus[option.value] ? 'block' : 'none';
+                }
+            });
 
             // Show/hide sport filter based on view
             sportFilter.style.display = currentView === 'by-sport' ? 'block' : 'none';
@@ -1202,6 +1278,8 @@
 
         // Apply all current filters
         function applyFilters() {
+            let filteredData = allTeamsData;
+
             if (currentView === 'overall') {
                 // Filter overall rankings by department
                 filteredTeams = [...overallRankings];
@@ -1214,8 +1292,12 @@
                 filteredTeams = [...allTeamsData];
 
                 if (currentSport !== 'all') {
-                    const formattedSport = currentSport.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
-                    filteredTeams = filteredTeams.filter(team => team.sport === formattedSport);
+                    // Only show if the event is enabled
+                    if (!eventStatus[currentSport]) {
+                        filteredTeams = [];
+                    } else {
+                        filteredTeams = filteredTeams.filter(team => team.sport === currentSport);
+                    }
                 }
 
                 if (currentDepartment !== 'all') {
@@ -1251,14 +1333,56 @@
             }
         }
 
+        function showLoading() {
+            tableContainer.innerHTML = '<div class="loading-indicator">Calculating overall rankings</div>';
+            // Disable filter controls
+            document.querySelectorAll('.filter-control').forEach(control => {
+                control.disabled = true;
+                control.classList.add('disabled');
+            });
+        }
+
+        function hideLoading() {
+            // Enable filter controls
+            document.querySelectorAll('.filter-control').forEach(control => {
+                control.disabled = false;
+                control.classList.remove('disabled');
+            });
+        }
+
         // Render the card view
         function renderCardView() {
-            const startIndex = (currentPage - 1) * config.rowsPerPage;
-            const endIndex = Math.min(startIndex + config.rowsPerPage, filteredTeams.length);
+            if (isFirstPageLoad && isDirectPageLoad) {
+                showLoading();
+                setTimeout(() => {
+                    hideLoading();
+                    isFirstPageLoad = false;
+                    renderCards();
+                }, 5000);
+            } else {
+                renderCards();
+            }
+        }
+
+        function renderCardView() {
+            const startIndex = (currentPage - 1) * config.cardRowsPerPage;
+            const endIndex = Math.min(startIndex + config.cardRowsPerPage, filteredTeams.length);
             const currentPageTeams = filteredTeams.slice(startIndex, endIndex);
 
             const cardContainer = document.createElement('div');
             cardContainer.className = 'team-cards-container';
+
+            if (currentPageTeams.length === 0) {
+                const noDataMessage = document.createElement('div');
+                noDataMessage.style.textAlign = 'center';
+                noDataMessage.style.padding = '20px';
+                noDataMessage.textContent = currentView === 'by-sport' && currentSport !== 'all' && !eventStatus[currentSport]
+                    ? 'No data available for the selected filters.'
+                    : 'No data available for the selected filters.';
+                cardContainer.appendChild(noDataMessage);
+                tableContainer.appendChild(cardContainer);
+                return;
+            }
 
             currentPageTeams.forEach(team => {
                 const card = document.createElement('div');
@@ -1275,7 +1399,6 @@
                 const rankDiv = document.createElement('div');
                 rankDiv.className = 'team-card-rank';
                 rankDiv.textContent = currentView === 'overall' ? team.rank : team.rank;
-
                 header.appendChild(nameDiv);
                 header.appendChild(rankDiv);
                 card.appendChild(header);
@@ -1383,12 +1506,38 @@
                 cardContainer.appendChild(card);
             });
 
-            tableContainer.innerHTML = '';
             tableContainer.appendChild(cardContainer);
         }
 
         // Render the table with current data
         function renderTable() {
+            if (isFirstPageLoad && isDirectPageLoad) {
+                showLoading();
+                setTimeout(() => {
+                    hideLoading();
+                    isFirstPageLoad = false;
+                    renderTableContent();
+                }, 5000);
+            } else {
+                renderTableContent();
+            }
+        }
+
+        function renderTableContent() {
+            tableContainer.innerHTML = '';
+
+            // Check if we have data to display
+            if (filteredTeams.length === 0) {
+                const noDataMessage = document.createElement('div');
+                noDataMessage.style.textAlign = 'center';
+                noDataMessage.style.padding = '20px';
+                noDataMessage.textContent = currentView === 'by-sport' && currentSport !== 'all' && !eventStatus[currentSport]
+                    ? 'No data available for the selected filters.'
+                    : 'No data available for the selected filters.';
+                tableContainer.appendChild(noDataMessage);
+                return;
+            }
+
             const table = document.createElement('table');
             table.className = 'leaderboard-table';
 
@@ -1422,8 +1571,8 @@
             const tbody = document.createElement('tbody');
 
             // Calculate pagination
-            const startIndex = (currentPage - 1) * config.rowsPerPage;
-            const endIndex = Math.min(startIndex + config.rowsPerPage, filteredTeams.length);
+            const startIndex = (currentPage - 1) * config.tableRowsPerPage;
+            const endIndex = Math.min(startIndex + config.tableRowsPerPage, filteredTeams.length);
             const currentPageTeams = filteredTeams.slice(startIndex, endIndex);
 
             // Add rows for current page
@@ -1485,7 +1634,6 @@
             table.appendChild(tbody);
 
             // Replace the loading indicator with the table
-            tableContainer.innerHTML = '';
             tableContainer.appendChild(table);
         }
 
@@ -1497,7 +1645,7 @@
             medalContainer.style.justifyContent = 'center';
             medalContainer.style.gap = '5px';
 
-            // Add gold medals
+            // Add medals
             if (medals.gold > 0) {
                 const goldWrapper = document.createElement('div');
                 goldWrapper.style.display = 'flex';
@@ -1518,7 +1666,6 @@
                 medalContainer.appendChild(goldWrapper);
             }
 
-            // Add silver medals
             if (medals.silver > 0) {
                 const silverWrapper = document.createElement('div');
                 silverWrapper.style.display = 'flex';
@@ -1539,7 +1686,6 @@
                 medalContainer.appendChild(silverWrapper);
             }
 
-            // Add bronze medals
             if (medals.bronze > 0) {
                 const bronzeWrapper = document.createElement('div');
                 bronzeWrapper.style.display = 'flex';
@@ -1570,7 +1716,7 @@
 
         // Update pagination controls
         function updatePagination() {
-            const totalPages = Math.ceil(filteredTeams.length / config.rowsPerPage);
+            const totalPages = Math.ceil(filteredTeams.length / (isCardView ? config.cardRowsPerPage : config.tableRowsPerPage));
             paginationContainer.innerHTML = '';
 
             // Don't show pagination if only one page
