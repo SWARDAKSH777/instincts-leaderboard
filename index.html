@@ -299,6 +299,12 @@
             animation: dots 1s steps(5, end) infinite;
         }
 
+        .no-events-message {
+            text-align: center;
+            padding: 20px;
+            font-size: 1.2rem;
+        }
+
         @keyframes dots {
 
             0%,
@@ -1148,6 +1154,13 @@
         // Process all data and calculate overall rankings
         function processData() {
             try {
+                // Check if all events are false
+                const allEventsFalse = Object.values(eventStatus).every(status => status === false);
+                if (allEventsFalse) {
+                    tableContainer.innerHTML = '<div class="no-events-message">No events currently ongoing</div>';
+                    return;
+                }
+                
                 console.log('[DEBUG] Starting data processing');
                 // First, add sport information to each team
                 allTeamsData = [];
