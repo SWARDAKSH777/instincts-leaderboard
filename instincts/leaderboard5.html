@@ -496,7 +496,7 @@
 
     <div class="container">
         <div class="leaderboard-header">
-            <h1 class="leaderboard-title">COLLYMPICS LEADERBOARD</h1>
+            <h1 class="leaderboard-title">LEADERBOARD</h1>
             <p class="leaderboard-subtitle">Overall Rankings Across All Events</p>
         </div>
 
@@ -509,15 +509,24 @@
 
                 <select class="filter-dropdown filter-control" id="sportFilter" style="display: none;">
                     <option value="all">All Sports</option>
+                    <option value="100M">1OOM Running</option>
+                    <option value="400M">4OOM Running</option>
+                    <option value="Shot-Put">Shot Put</option>
+                    <option value="Javeline-throw">Javeline Throw</option>
+                    <option value="Long-jump">Long Jump</option>
+                    <option value="Discus-throw">Discus Throw</option>
+                    <option value="tug-of-war">Tug of War</option>
+                    <option value="Kho-kho">Kho Kho</option>
+                    <option value="Basketball">Basketball</option>
+                    <option value="Badminton">Badminton</option>
+                    <option value="Pickle-ball">Pickle Ball</option>
+                    <option value="table-tennis">Table Tennis</option>
                     <option value="chess">Chess</option>
                     <option value="carrom">Carrom</option>
-                    <option value="table-tennis">Table Tennis</option>
-                    <option value="cricket">Cricket</option>
+                    <option value="Lawn-tennis">Lawn Tennis</option>
+                    <option value="Vollyball">Volleyball</option>
                     <option value="football">Football</option>
-                    <option value="athletics">Athletics</option>
-                    <option value="tug-of-war">Tug of War</option>
-                    <option value="treasure-hunt">Treasure Hunt</option>
-                    <option value="fun-race">Fun Race</option>
+
                 </select>
 
                 <select class="filter-dropdown filter-control" id="departmentFilter">
@@ -556,15 +565,24 @@
 
         // Event status tracking - set to true to enable, false to disable
         const eventStatus = {
-            "chess": false,
+            "100M": true,
+            "400M": true,
+            "Shot-put" : true,
+            "Javelin-throw" : true,
+            "Long-jump" : true,
+            "Discus-throw" : true,
+            "Tug-of-war" : true,
+            "Kho-Kho" : true,
+            "Basketball" : true,
+            "Badminton" : true,
+            "Pickle-ball" : true,
+            "table-tennis" : true,
+            "chess": true,
             "carrom": true,
-            "table-tennis": true,
-            "cricket": true,
-            "football": true,
-            "athletics": true,
-            "tug-of-war": true,
-            "treasure-hunt": true,
-            "fun-race": true
+            "Lawn-tennis" : true,
+            "Vollyball" : true,
+            "Football" : true,
+
         };
 
         // Sports data
@@ -577,7 +595,7 @@
                     "medals": {
                         "gold": 1,
                         "silver": 0,
-                        "bronze": 1
+                        "bronze": 0
                     },
                     "rank": 1
                 },
@@ -626,462 +644,7 @@
                     "rank": 5
                 }
             ],
-            "carrom": [
-                {
-                    "name": "Checkmate Kings",
-                    "department": "Computer Science",
-                    "points": 102,
-                    "medals": {
-                        "gold": 2,
-                        "silver": 2,
-                        "bronze": 0
-                    },
-                    "rank": 1
-                },
-                {
-                    "name": "Board Bosses",
-                    "department": "Electronics",
-                    "points": 94,
-                    "medals": {
-                        "gold": 0,
-                        "silver": 1,
-                        "bronze": 0
-                    },
-                    "rank": 2
-                },
-                {
-                    "name": "Pocket Pros",
-                    "department": "Mechanical",
-                    "points": 85,
-                    "medals": {
-                        "gold": 0,
-                        "silver": 0,
-                        "bronze": 1
-                    },
-                    "rank": 3
-                },
-                {
-                    "name": "Flick Masters",
-                    "department": "Civil",
-                    "points": 76,
-                    "medals": {
-                        "gold": 0,
-                        "silver": 0,
-                        "bronze": 0
-                    },
-                    "rank": 4
-                },
-                {
-                    "name": "Queen Hunters",
-                    "department": "Chemical",
-                    "points": 68,
-                    "medals": {
-                        "gold": 0,
-                        "silver": 0,
-                        "bronze": 0
-                    },
-                    "rank": 5
-                }
-            ],
-            "table-tennis": [
-                {
-                    "name": "Ping Pong Masters",
-                    "department": "Computer Science",
-                    "points": 98,
-                    "medals": {
-                        "gold": 1,
-                        "silver": 0,
-                        "bronze": 0
-                    },
-                    "rank": 1
-                },
-                {
-                    "name": "Spin Wizards",
-                    "department": "Electronics",
-                    "points": 90,
-                    "medals": {
-                        "gold": 0,
-                        "silver": 1,
-                        "bronze": 0
-                    },
-                    "rank": 2
-                },
-                {
-                    "name": "Rally Kings",
-                    "department": "Mechanical",
-                    "points": 85,
-                    "medals": {
-                        "gold": 0,
-                        "silver": 0,
-                        "bronze": 1
-                    },
-                    "rank": 3
-                },
-                {
-                    "name": "Smash Hitters",
-                    "department": "Civil",
-                    "points": 75,
-                    "medals": {
-                        "gold": 0,
-                        "silver": 0,
-                        "bronze": 0
-                    },
-                    "rank": 4
-                },
-                {
-                    "name": "Paddle Pros",
-                    "department": "Chemical",
-                    "points": 68,
-                    "medals": {
-                        "gold": 0,
-                        "silver": 0,
-                        "bronze": 0
-                    },
-                    "rank": 5
-                }
-            ],
-            "cricket": [
-                {
-                    "name": "Boundary Blazers",
-                    "department": "Computer Science",
-                    "points": 110,
-                    "medals": {
-                        "gold": 1,
-                        "silver": 0,
-                        "bronze": 0
-                    },
-                    "rank": 1
-                },
-                {
-                    "name": "Wicket Warriors",
-                    "department": "Electronics",
-                    "points": 95,
-                    "medals": {
-                        "gold": 0,
-                        "silver": 1,
-                        "bronze": 0
-                    },
-                    "rank": 2
-                },
-                {
-                    "name": "Cricket Crusaders",
-                    "department": "Mechanical",
-                    "points": 87,
-                    "medals": {
-                        "gold": 0,
-                        "silver": 0,
-                        "bronze": 1
-                    },
-                    "rank": 3
-                },
-                {
-                    "name": "Sixer Squad",
-                    "department": "Civil",
-                    "points": 76,
-                    "medals": {
-                        "gold": 0,
-                        "silver": 0,
-                        "bronze": 0
-                    },
-                    "rank": 4
-                },
-                {
-                    "name": "Pitch Patriots",
-                    "department": "Chemical",
-                    "points": 65,
-                    "medals": {
-                        "gold": 0,
-                        "silver": 0,
-                        "bronze": 0
-                    },
-                    "rank": 5
-                }
-            ],
-            "football": [
-                {
-                    "name": "Goal Getters",
-                    "department": "Mechanical",
-                    "points": 115,
-                    "medals": {
-                        "gold": 1,
-                        "silver": 0,
-                        "bronze": 0
-                    },
-                    "rank": 1
-                },
-                {
-                    "name": "Net Ninjas",
-                    "department": "Computer Science",
-                    "points": 100,
-                    "medals": {
-                        "gold": 0,
-                        "silver": 1,
-                        "bronze": 0
-                    },
-                    "rank": 2
-                },
-                {
-                    "name": "Kick Kings",
-                    "department": "Electronics",
-                    "points": 88,
-                    "medals": {
-                        "gold": 0,
-                        "silver": 0,
-                        "bronze": 1
-                    },
-                    "rank": 3
-                },
-                {
-                    "name": "Strike Force",
-                    "department": "Civil",
-                    "points": 76,
-                    "medals": {
-                        "gold": 0,
-                        "silver": 0,
-                        "bronze": 0
-                    },
-                    "rank": 4
-                },
-                {
-                    "name": "Dribble Dynasty",
-                    "department": "Chemical",
-                    "points": 64,
-                    "medals": {
-                        "gold": 0,
-                        "silver": 0,
-                        "bronze": 0
-                    },
-                    "rank": 5
-                }
-            ],
-            "athletics": [
-                {
-                    "name": "Sprint Sensations",
-                    "department": "Electronics",
-                    "points": 108,
-                    "medals": {
-                        "gold": 1,
-                        "silver": 0,
-                        "bronze": 0
-                    },
-                    "rank": 1
-                },
-                {
-                    "name": "Track Titans",
-                    "department": "Computer Science",
-                    "points": 96,
-                    "medals": {
-                        "gold": 0,
-                        "silver": 1,
-                        "bronze": 0
-                    },
-                    "rank": 2
-                },
-                {
-                    "name": "Relay Ravens",
-                    "department": "Mechanical",
-                    "points": 85,
-                    "medals": {
-                        "gold": 0,
-                        "silver": 0,
-                        "bronze": 1
-                    },
-                    "rank": 3
-                },
-                {
-                    "name": "Dash Demons",
-                    "department": "Civil",
-                    "points": 72,
-                    "medals": {
-                        "gold": 0,
-                        "silver": 0,
-                        "bronze": 0
-                    },
-                    "rank": 4
-                },
-                {
-                    "name": "Hurdle Heroes",
-                    "department": "Chemical",
-                    "points": 67,
-                    "medals": {
-                        "gold": 0,
-                        "silver": 0,
-                        "bronze": 0
-                    },
-                    "rank": 5
-                }
-            ],
-            "tug-of-war": [
-                {
-                    "name": "Pulling Panthers",
-                    "department": "Mechanical",
-                    "points": 110,
-                    "medals": {
-                        "gold": 1,
-                        "silver": 0,
-                        "bronze": 0
-                    },
-                    "rank": 1
-                },
-                {
-                    "name": "Rope Raiders",
-                    "department": "Civil",
-                    "points": 95,
-                    "medals": {
-                        "gold": 0,
-                        "silver": 1,
-                        "bronze": 0
-                    },
-                    "rank": 2
-                },
-                {
-                    "name": "Tug Titans",
-                    "department": "Chemical",
-                    "points": 85,
-                    "medals": {
-                        "gold": 0,
-                        "silver": 0,
-                        "bronze": 1
-                    },
-                    "rank": 3
-                },
-                {
-                    "name": "Pull Pros",
-                    "department": "Computer Science",
-                    "points": 70,
-                    "medals": {
-                        "gold": 0,
-                        "silver": 0,
-                        "bronze": 0
-                    },
-                    "rank": 4
-                },
-                {
-                    "name": "Grip Gurus",
-                    "department": "Electronics",
-                    "points": 65,
-                    "medals": {
-                        "gold": 0,
-                        "silver": 0,
-                        "bronze": 0
-                    },
-                    "rank": 5
-                }
-            ],
-            "treasure-hunt": [
-                {
-                    "name": "Map Masters",
-                    "department": "Computer Science",
-                    "points": 105,
-                    "medals": {
-                        "gold": 1,
-                        "silver": 0,
-                        "bronze": 0
-                    },
-                    "rank": 1
-                },
-                {
-                    "name": "Clue Crew",
-                    "department": "Electronics",
-                    "points": 92,
-                    "medals": {
-                        "gold": 0,
-                        "silver": 1,
-                        "bronze": 0
-                    },
-                    "rank": 2
-                },
-                {
-                    "name": "Puzzle Pros",
-                    "department": "Civil",
-                    "points": 84,
-                    "medals": {
-                        "gold": 0,
-                        "silver": 0,
-                        "bronze": 1
-                    },
-                    "rank": 3
-                },
-                {
-                    "name": "Quest Squad",
-                    "department": "Mechanical",
-                    "points": 77,
-                    "medals": {
-                        "gold": 0,
-                        "silver": 0,
-                        "bronze": 0
-                    },
-                    "rank": 4
-                },
-                {
-                    "name": "Riddle Raiders",
-                    "department": "Chemical",
-                    "points": 68,
-                    "medals": {
-                        "gold": 0,
-                        "silver": 0,
-                        "bronze": 0
-                    },
-                    "rank": 5
-                }
-            ],
-            "fun-race": [
-                {
-                    "name": "Funky Racers",
-                    "department": "Electronics",
-                    "points": 100,
-                    "medals": {
-                        "gold": 1,
-                        "silver": 0,
-                        "bronze": 0
-                    },
-                    "rank": 1
-                },
-                {
-                    "name": "Zany Zoomers",
-                    "department": "Computer Science",
-                    "points": 90,
-                    "medals": {
-                        "gold": 0,
-                        "silver": 1,
-                        "bronze": 0
-                    },
-                    "rank": 2
-                },
-                {
-                    "name": "Wacky Runners",
-                    "department": "Chemical",
-                    "points": 82,
-                    "medals": {
-                        "gold": 0,
-                        "silver": 0,
-                        "bronze": 1
-                    },
-                    "rank": 3
-                },
-                {
-                    "name": "Crazy Sprinters",
-                    "department": "Mechanical",
-                    "points": 75,
-                    "medals": {
-                        "gold": 0,
-                        "silver": 0,
-                        "bronze": 0
-                    },
-                    "rank": 4
-                },
-                {
-                    "name": "Quirky Dashers",
-                    "department": "Civil",
-                    "points": 68,
-                    "medals": {
-                        "gold": 0,
-                        "silver": 0,
-                        "bronze": 0
-                    },
-                    "rank": 5
-                }
-            ]
+            
         };
 
         // State variables
